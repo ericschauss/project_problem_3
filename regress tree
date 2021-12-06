@@ -37,3 +37,18 @@ prp(regress_tr)
 
 predict_train <- predict(regress_tr, train_df)
 accuracy(predict_train, train_df$price)
+
+
+predict_valid <- predict(regress_tr, valid_df)
+accuracy(predict_valid, valid_df$price)
+
+
+# predicted value of new houses
+new_houses <- read.csv("house_test_11.csv")
+names(new_houses)
+new_houses <- new_houses[ ,-c(1:6,12:13,16:22)]
+names(new_houses)
+
+regress_tr_pred <- predict(regress_tr, newdata = new_houses)
+regress_tr_pred
+
