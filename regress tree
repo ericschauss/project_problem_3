@@ -1,0 +1,39 @@
+library(tidyr)
+library(rpart)
+library(rpart.plot)
+library(caret)
+library(forecast)
+
+houses <- read.csv("house_11.csv")
+head(houses)
+names(houses)
+nrow(houses)
+houses <- na.omit(houses)
+houses <- houses[ ,-c(1:6,13,14,17:23)]
+names(houses)
+nrow(houses)
+
+
+
+
+
+set.seed(123)
+
+train_index <- sample(1:nrow(houses), 0.6 *nrow(houses))
+valid_index <- setdiff(1:nrow(houses), train_index)
+train_df <- houses[train_index, ]
+valid_df <- houses[valid_index, ]
+nrow(train_df)
+nrow(valid_df)
+
+
+# regression tree with 3 levels 
+
+regress_tr <- rpart(price ~ bedrooms + bathrooms + sqft_living + sqft_lot + floors + condition + grade + sqft_living15 + sqft_lot15,
+                    data = train_df, 
+                    method = "anova",
+                    maxdepth = 3)
+prp(regress_tr)
+
+predict_train <- predict(regress_tr, train_df)
+accuracy(predict_train, train_df$price)
